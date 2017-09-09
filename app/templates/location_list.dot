@@ -1,0 +1,32 @@
+<ul class='sick-results'>
+    {{? it.locations.length == 0 }}
+        <li>
+            <div class='detail'>
+                <h3><a>Shucks</a></h3>
+                <p>Sans dice, friend. Go to bed.</p>
+            </div>
+        </li>
+    {{??}}
+        {{~ it.locations :location:i }}
+            <li>
+               <div class='detail'>
+                   <h3>{{= location.name }}</h3>
+                   <p>{{= location.address }}</p>
+                   <p>{{= location.city }}</p>
+                   <p class="distance"></p>
+                   <p>
+                       {{? location.rating }}
+                            {{= location.starRating }}
+                       {{??}}
+                            no rating available
+                       {{?}}
+                   </p>
+                   <div class='more-details'></div>
+               </div>
+               <div class='detail-right'>
+                   <button onclick='moreDetails({{= i }})'>More Details</button>
+               </div>
+           </li>
+        {{~}}
+    {{?}}
+</ul>
