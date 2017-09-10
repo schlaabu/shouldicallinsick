@@ -13,7 +13,7 @@
                    <h3>{{= location.name }}</h3>
                    <p>{{= location.address }}</p>
                    <p>{{= location.city }}</p>
-                   <p class="distance"></p>
+                   <p class='distance' id='geo-id-{{= location.id}}'>{{= location.locationDistance(it.myLocation, 'geo-id-' + location.id) }}</p>
                    <p>
                        {{? location.rating }}
                             {{= location.starRating }}

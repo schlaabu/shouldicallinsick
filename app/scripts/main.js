@@ -13,11 +13,13 @@ let ribbonText = () => {
   ribbonContainer.innerHTML = ribbonOptions[ribbonRandom];
   howSick();
 }; //ribbonText
+
 let howSick = () => {
   let sickMeterTemplate = require('../templates/sick_meter.dot');
   document.querySelector('.sick-meter').innerHTML = sickMeterTemplate();
   picker();
 }; //howSick
+
 let picker = () => {
   let left = document.querySelector('.left');
   let right = document.querySelector('.right');
@@ -40,6 +42,7 @@ let picker = () => {
     }
   };
 }; //picker
+
 window.shouldI = () => {
   let introText = document.querySelector('.intro-text');
   introText.innerHTML = '';
@@ -90,6 +93,7 @@ window.shouldI = () => {
       break;
   } //switch
 }; //shouldI
+
 window.getLocation = () => {
   let findButton = document.querySelector('.find-button');
   let sickResults = document.querySelector('.search-results');
@@ -106,11 +110,12 @@ window.getLocation = () => {
     service = new google.maps.places.PlacesService(map);
     service.nearbySearch(request,callback);
     function callback(results,status) {
-      const Location = require('./google_maps/location');
+      let Location = require('./google_maps/location');
       let locationList = require('../templates/location_list.dot');
-      let locations = results.map((r) => new Location(r));
-      sickResults.innerHTML = locationList({ locations });
+      let locations = results.map((r) => new Location(r)); 
+      sickResults.innerHTML = locationList({ locations, myLocation });
       result = results;
+      //locationDistance();
     }; //callback
   findButton.outerHTML = "";
   }; //success
@@ -118,24 +123,9 @@ window.getLocation = () => {
     console.log("fail");
   }; //error
   navigator.geolocation.getCurrentPosition(success, error);
-  sickResults.innerHTML = `<h1 align='center' style='opacity: 100;'>Loading...</h1>`;
+  sickResults.innerHTML = `<h1 align='center'>Loading...</h1>`;
 }; //getLocation
-let locationDistance = (i) => {
-  let placeLocation = result[i].geometry.location;
-  let origin = new google.maps.LatLng(myLocation[0], myLocation[1]);
-  let destination = placeLocation;
-  let locService = new google.maps.DistanceMatrixService();
-  locService.getDistanceMatrix(
-    { origins: [origin],
-      destinations: [destination],
-      travelMode: 'WALKING',
-    }, callback);
-  function callback(response) {
-    let distanceContainer = document.querySelectorAll('.distance');
-    let distance = response.rows[0].elements[0].distance.text;
-    distanceContainer[i].innerHTML = distance + " away";
-  }; //callback
-}; //locationDistance
+
 window.moreDetails = (i) => {
   let detailsContainer = document.querySelectorAll('.more-details');
   let detailsButton = document.querySelectorAll('.detail-right');
@@ -155,4 +145,5 @@ window.moreDetails = (i) => {
     detailsButton[i].innerHTML = '';
   }); //getDetails
 }; //moreDetails
+
 window.onload = ribbonText;

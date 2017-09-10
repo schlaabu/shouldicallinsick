@@ -1,11 +1,17 @@
 const NO_ADDRESS = 'No address details available'
 const NO_CITY = 'No address details available'
+const NO_DISTANCE = 'No distance details available'
 
 module.exports = class Location {
   constructor(data) {
     this.name = data.name;
+    this.id = data.place_id;
+    this.geo = data.geometry.location;
     [this.street, this.cityName] = data.vicinity.split(', ');
     this.rating = data.rating;
+  }
+  get distance() {
+    return this.geo || NO_DISTANCE;
   }
 
   get address() {
@@ -15,6 +21,23 @@ module.exports = class Location {
   get city() {
     return this.cityName || NO_CITY;
   }
+
+  locationDistance(myLocation, cssId) {
+    let placeLocation = this.geo;
+    let origin = new google.maps.LatLng(myLocation[0],myLocation[1]);
+    let destination = placeLocation;
+    let locService = new google.maps.DistanceMatrixService();
+    locService.getDistanceMatrix(
+      { origins: [origin],
+        destinations: [destination],
+        travelMode: 'WALKING',
+      }, callback);
+    function callback(response) {
+      let distanceContainer = document.getElementById(cssId);
+      let distance = response.rows[0].elements[0].distance.text;
+      distanceContainer.innerHTML = distance + " away";
+    }; //callback
+  }; //locationDistance
 
   get starRating () {
     let starWidth = 20;
@@ -39,5 +62,5 @@ module.exports = class Location {
     } //if
     let stars = starTag + starData;
     return stars;
-  };
-}
+  }; //starRating
+} //Location
